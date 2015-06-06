@@ -46,10 +46,10 @@ RUN pip --version
 RUN pip install dst numpy pyzmq tornado ipython scikit-learn pandas 
 
 # Install R
-RUN apt-get install r-base-dev
+# RUN apt-get install r-base-dev
 
 # Install R packages
-RUN echo "install.packages(c('ggplot2', 'plyr', 'dplyr', 'lubridate', 'zoo', 'forecast', 'sqldf'),repos='http://cran.us.r-project.org')" | R --slave --no-save --no-restore-history
+# RUN echo "install.packages(c('ggplot2', 'plyr', 'dplyr', 'lubridate', 'zoo', 'forecast', 'sqldf'),repos='http://cran.us.r-project.org')" | R --slave --no-save --no-restore-history
 
 ########
 # gads #
