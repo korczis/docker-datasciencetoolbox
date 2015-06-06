@@ -42,7 +42,7 @@ RUN pip --version
 # Install dst
 RUN pip install dst numpy pyzmq tornado ipython scikit-learn pandas 
 
-# Install R
+# Install R - http://cran.r-project.org/bin/linux/ubuntu/README
 # RUN apt-get install r-base-dev
 
 # Install R packages
@@ -89,11 +89,10 @@ RUN add-apt-repository ppa:chris-lea/node.js
 RUN apt-get update
 
 # Install npm
-RUN wget -O /tmp/install.sh http://npmjs.org/install.sh
-RUN chmod +x /tmp/install.sh
-RUN /tmp/install.sh
-
-# RUN apt-get install -qy npm
+RUN apt-get install -qy node npm
+# RUN wget -O /tmp/install.sh http://npmjs.org/install.sh
+# RUN chmod +x /tmp/install.sh
+# RUN /tmp/install.sh
 
 # Install xml2json
 RUN npm install -g xml2json-command
