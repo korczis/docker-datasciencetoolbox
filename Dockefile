@@ -4,15 +4,12 @@ FROM ubuntu:14.04
 # Set home directory
 RUN cd ~
 
-# Update packages info
-RUN apt-get update
-
 ########
 # base #
 ########
 
 # Install required packages
-RUN apt-get install -qy git mysql-common libmysqlclient-dev python \
+RUN apt-get update && apt-get install -qy git mysql-common libmysqlclient-dev python \
 python3 python-dev python-pycurl python-numpy python-scipy python-matplotlib \
 libblas-dev liblapack-dev gfortran python3-dev wget llvm-gcc build-essential \
 libc-dev libfreetype6-dev libpng12-dev software-properties-common \
@@ -66,7 +63,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
 ##########
 
 # Install dsactl stuff - https://github.com/DataScienceToolbox/data-science-toolbox/blob/master/bundles/dsatcl/install.yml
-RUN apt-get install -qy parallel libxml2-dev libxslt1-dev golang-go nodejs \
+RUN apt-get update && apt-get install -qy parallel libxml2-dev libxslt1-dev golang-go nodejs \
 make curl g++ python-software-properties  p7zip-full unrar-free unzip
 
 # Create directory for tools
