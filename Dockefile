@@ -1,0 +1,111 @@
+# Pull base image.
+FROM ubuntu:14.04
+
+# Set home directory
+RUN cd ~
+
+# Update packages info
+RUN apt-get update
+
+########
+# base #
+########
+
+# Install required packages
+RUN apt-get install -qy git mysql-common libmysqlclient-dev python \
+python3 python-dev python-pycurl python-numpy python-scipy python-matplotlib \
+libblas-dev liblapack-dev gfortran python3-dev wget llvm-gcc build-essential \
+libc-dev libfreetype6-dev libpng12-dev software-properties-common \
+python-software-properties
+
+# Install Oracle Java 8 - https://github.com/dockerfile/java/blob/master/oracle-java8/Dockerfile
+RUN \
+  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+  add-apt-repository -y ppa:webupd8team/java && \
+  apt-get update && \
+  apt-get install -y oracle-java8-installer && \
+  rm -rf /var/lib/apt/lists/* && \
+  rm -rf /var/cache/oracle-jdk8-installer
+
+# Define commonly used JAVA_HOME variable
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+
+# Clone scripts
+RUN git clone https://github.com/DataScienceToolbox/data-science-toolbox.git
+
+# Download pip installer
+RUN wget https://bootstrap.pypa.io/get-pip.py
+
+# Run pip installer
+RUN python get-pip.py
+
+# Check pip version
+RUN pip --version
+
+# Install dst
+RUN pip install dst numpy pyzmq tornado ipython scikit-learn pandas 
+
+# Install R
+RUN apt-get install r-base-dev
+
+# Install R packages
+RUN echo "install.packages(c('ggplot2', 'plyr', 'dplyr', 'lubridate', 'zoo', 'forecast', 'sqldf'),repos='http://cran.us.r-project.org')" | R --slave --no-save --no-restore-history
+
+########
+# gads #
+########
+
+# Install General Assembly Data Science - https://github.com/DataScienceToolbox/data-science-toolbox/blob/master/bundles/gads/install.yml	
+RUN pip install patsy statsmodels seaborn
+
+# Add R keys
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+
+##########
+# dsactl #
+##########
+
+# Install dsactl stuff - https://github.com/DataScienceToolbox/data-science-toolbox/blob/master/bundles/dsatcl/install.yml
+RUN apt-get install -qy parallel libxml2-dev libxslt1-dev golang-go nodejs \
+make curl g++ python-software-properties  p7zip-full unrar-free unzip
+
+# Create directory for tools
+RUN mkdir ~/tools
+
+# Install jq
+RUN wget -O ~/tools/jq http://stedolan.github.io/jq/download/linux64/jq
+RUN chmod +x ~/tools/jq
+
+# Configure Go
+RUN echo 'golang-go golang-go/dashboard boolean true' > /tmp/preseed.conf
+RUN debconf-set-selections /tmp/preseed.conf
+
+# Get command-line tools for data science
+RUN git clone https://github.com/jeroenjanssens/command-line-tools-for-data-science.git
+
+RUN GOPATH=~/.go go get github.com/jehiah/json2csv
+
+# Add PPA for nodejs
+RUN add-apt-repository ppa:chris-lea/node.js
+
+# Update cache
+RUN apt-get update
+
+# Install npm
+RUN wget -O /tmp/install.sh http://npmjs.org/install.sh
+RUN chmod +x /tmp/install.sh
+RUN /tmp/install.sh
+
+# RUN apt-get install -qy npm
+
+# Install xml2json
+RUN npm install -g xml2json-command
+
+# Install Python packages
+RUN pip install awscli csvkit cssselect lxml
+
+# Export PATH
+RUN export PATH=/root/.go/bin:/usr/lib/go/bin:/root/tools:/root/command-line-tools-for-data-science/tools:$PATH
+
+# Define default command.
+CMD ["bash"] 
