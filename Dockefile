@@ -28,7 +28,7 @@ RUN \
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
 # Clone scripts
-RUN git clone https://github.com/DataScienceToolbox/data-science-toolbox.git
+RUN cd ~ && git clone https://github.com/DataScienceToolbox/data-science-toolbox.git
 
 # Download pip installer
 RUN wget https://bootstrap.pypa.io/get-pip.py
@@ -78,7 +78,7 @@ RUN echo 'golang-go golang-go/dashboard boolean true' > /tmp/preseed.conf
 RUN debconf-set-selections /tmp/preseed.conf
 
 # Get command-line tools for data science
-RUN git clone https://github.com/jeroenjanssens/command-line-tools-for-data-science.git
+RUN cd ~ && git clone https://github.com/jeroenjanssens/command-line-tools-for-data-science.git
 
 RUN GOPATH=~/.go go get github.com/jehiah/json2csv
 
@@ -101,7 +101,7 @@ RUN npm install -g xml2json-command
 RUN pip install awscli csvkit cssselect lxml
 
 # Export PATH
-RUN export PATH=/root/.go/bin:/usr/lib/go/bin:/root/tools:/root/command-line-tools-for-data-science/tools:$PATH
+COPY .bashrc /root/.bashrc
 
 # Define default command.
 CMD ["bash"] 
